@@ -1,0 +1,84 @@
+/* Cornell University Color Scheme */
+:root {
+    --style-red: maroon; /* Carnelian Red */
+    --style-white: #FFFFFF; /* White */
+    --style-dark-grey: #333333; /* Dark gray for text */
+    --style-light-grey: #F1F1F1; /* Light gray for backgrounds */
+}
+
+/* General Body Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: var(--style-light-grey);
+    color: var(--style-dark-grey);
+    margin: 0;
+    padding: 3%;
+}
+
+/* Header Styles */
+header {
+    background-color: var(--style-red);
+    color: var(--style-white);
+    padding: 20px;
+    text-align: center;
+}
+
+/* Navigation Styles */
+nav {
+    background-color: var(--style-red);
+    display: flex;
+    justify-content: center;
+    padding: 10px 0;
+}
+
+nav a {
+    color: var(--style-white);
+    text-decoration: none;
+    margin: 0 20px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
+/* Button Styles */
+button {
+    background-color: var(--style-red);
+    color: var(--style-white);
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: darken(var(--style-red), 10%);
+}
+
+/* Footer Styles */
+footer {
+    background-color: var(--style-dark-grey);
+    color: var(--style-white);
+    padding: 20px;
+    text-align: center;
+}
+
+/* Section/Content Styles */
+section {
+    padding: 20px;
+    background-color: var(--style-white);
+    margin: 20px 0;
+    border-radius: 10px;
+}
+
+h1, h2, h3 {
+    color: var(--style-red);
+}
+
+p {
+    font-size: 16px;
+    line-height: 1.6;
+}
