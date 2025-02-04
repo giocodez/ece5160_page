@@ -27,7 +27,7 @@
     <text>When everything was set up, I ran the four examples and got the following results:</text>
     <text>For blink I saw the blue light flash repeatedly. How it looks can be seen under lab tasks where I linked a video responding to the C note.</text>
     <text>For the next task "Apollo3 - Serial" was printed followed by "printf supports printing formatted strings! count: n" (where n was 0 adding up until 9). After 9 was reached it lastly printed out "Echo... (type characters into the Serial Monitor to see them echo back)"</text>
-    <text>For temperature, it read 76 Fahrenheit and after rubbinb the temperature sensor for a while it went up to the low 80s (~82) and after stopping it went back down to 76.</text>
+    <text>For temperature, it read 76 Fahrenheit and after rubbing the temperature sensor for a while it went up to the low 80s (~82) and after stopping it went back down to 76.</text>
 
     <text>mic_output had the frequency output change from 100-150 to 1200-1250 when whistling at it. Images of below and after are included below.</text>
     <div class="image-container">
@@ -60,6 +60,8 @@
       </video>
     </div>
 
+    <h4>First 3 Tasks</h4>
+
       <text>The first three tasks in Lab1 B involved sending values to the Artemis Board (and in the case of GET_TIME_MILLIS) it replies with a string to the string characteristic.
         My code output the values in the Serial Monitor and receives it back to the computer which can be seen below.
       </text><br/><br/>
@@ -68,6 +70,8 @@
         <img src="imgs\lab1_2.png" width="" height="200">
         <img src="imgs\lab1_6.png" width="" height="200">
       </div>
+
+      <h4>Notification Handler and 3 Ways to Get Data</h4>
       
       
       <text>After that I needed to receive the string characteristic from GET_TIME_MILLIS by setting up a notification handler.
@@ -92,13 +96,17 @@
         <img src="imgs\lab1_4.png" width="" height="400"> 
       </div>
 
-      <text>The second method uses 3150-2944 = 206 messages over 6 seconds so slightly over 34 messages a second.
+      <h4>Comparison of Data Transfer Methods</h4>
+
+      <text>As mentioned earlier first method transfered 129 bytes/second. The second method uses 3150-2944 = 206 messages over 6 seconds so slightly over 34 messages a second.
         The size of these messages were larger too and were 27 bytes a piece so 918 bytes a second.
         As a result, the second method prints much faster. The advantage of the first is it is continuously
         sending data and isn't limited by memory, however, it appears to be slower and doesn't retain memory.
         The second method is faster but is limited in the amount of memory it can store and display. Given 384 kB of RAM
         if the messages are in packets of 150 bytes, you can send and store 2,560 messages.
       </text><br/><br/>
+
+      <h4>5000-Level Tasks</h4>
 
       <text>In general as you increase the byte size of the message it will take longer to process.
         One can see the recorded times in the chart below and the general trend line.
