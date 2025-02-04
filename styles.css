@@ -2,7 +2,7 @@
     --style-red: maroon; /* Carnelian Red */
     --style-white: #FFFFFF; /* White */
     --style-dark-grey: #333333; /* Dark gray for text */
-    --style-light-grey: #F1F1F1; /* Light gray for backgrounds */
+    --style-light-grey: #ffffff; /* Light gray for backgrounds */
 }
 
 body {
@@ -115,6 +115,7 @@ text {
     align-items: center;
     height: 100%;  
     padding: 10px;
+    background-color: var(--style-dark-grey);
   }
 
 .image-container img {
