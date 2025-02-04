@@ -7,7 +7,9 @@
   <body>
     <h1>ECE 5160</h1>
     <h2>Hi, I'm Giorgi!</h2>
-    <img src="imgs\profile_pic.jpeg" width="150" height="150"><br/><br/>
+    <div class="image-container">
+      <img src="imgs\profile_pic.jpeg" width="300" height="300"><br/><br/>
+    </div>
     <text>Hi, my name is Giorgi! I grew up overseas and am now a CS Student with a focus on Robotics. 
       Last summer I worked at Apptronik, a humanoid robotics company.
       I'm looking forward to building some Fast Robots!
@@ -22,15 +24,16 @@
       Then I downloaded the code and started the jupyter server via cmd line. After downloading I got the MAC Address: 'c0:81:d0:22:9:64' and generated a new uuid and set these in connections.yaml and ran through the demo.ipynb notebook to verify everything was working. 
     </text>
     <h4>Example Tasks</h4>
-    <text>When everything was set up, I ran the four examples and got the following results:</text><br/><br/>
-    <text>For blink I saw the blue light flash repeatedly. How it looks can be seen under lab tasks where I linked a video responding to the C note.</text><br/><br/>
+    <text>When everything was set up, I ran the four examples and got the following results:</text>
+    <text>For blink I saw the blue light flash repeatedly. How it looks can be seen under lab tasks where I linked a video responding to the C note.</text>
     <text>For the next task "Apollo3 - Serial" was printed followed by "printf supports printing formatted strings! count: n" (where n was 0 adding up until 9). After 9 was reached it lastly printed out "Echo... (type characters into the Serial Monitor to see them echo back)"</text>
-    <br/><br/>
-    <text>For temperature, it read 76 Fahrenheit and after rubbinb the temperature sensor for a while it went up to the low 80s (~82) and after stopping it went back down to 76.</text><br/><br/>
+    <text>For temperature, it read 76 Fahrenheit and after rubbinb the temperature sensor for a while it went up to the low 80s (~82) and after stopping it went back down to 76.</text>
 
-    <text>mic_output had the frequency output change from 100-150 to 1200-1250 when whistling at it. Images of below and after are included below.</text><br/><br/>
-    <img src="imgs\lab1_9.png" width="" height="75">
-    <img src="imgs\lab1_8.png" width="" height="75"><br/><br/>
+    <text>mic_output had the frequency output change from 100-150 to 1200-1250 when whistling at it. Images of below and after are included below.</text>
+    <div class="image-container">
+      <img src="imgs\lab1_9.png" width="" height="300">
+      <img src="imgs\lab1_8.png" width="" height="300"><br/><br/>  
+    </div>
     <h4>Codebase</h4>
     <text>There's two sets of code. One is the Arduino code in C which is uploaded to the Artemis Nano and the other is python code which we use on the computer.
       The demo.ipynb file provides member functions which are used to communicate via ble.member_function(member_function_parameters).
@@ -49,35 +52,45 @@
       I found the frequency of "C" to be 1041 and then made an if statement that would then blink
       if C was called.
     </text><br/><br/>
-
-    <video width="640" height="360" controls>
-      <source src="imgs\IMG_4501.mp4" type="video/mp4">
-      Your browser does not support the video tag.
-    </video><br/><br/>
+    
+    <div class="image-container">
+      <video width="640" height="360" controls>
+        <source src="imgs\IMG_4501.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+    </div>
 
       <text>The first three tasks in Lab1 B involved sending values to the Artemis Board (and in the case of GET_TIME_MILLIS) it replies with a string to the string characteristic.
         My code output the values in the Serial Monitor and receives it back to the computer which can be seen below.
       </text><br/><br/>
-
-      <img src="imgs\lab1_1.png" width="" height="75">
-      <img src="imgs\lab1_2.png" width="" height="100">
-      <img src="imgs\lab1_6.png" width="" height="75"><br/><br/>
+      <div class="image-container">
+        <img src="imgs\lab1_1.png" width="" height="200">
+        <img src="imgs\lab1_2.png" width="" height="200">
+        <img src="imgs\lab1_6.png" width="" height="200">
+      </div>
+      
       
       <text>After that I needed to receive the string characteristic from GET_TIME_MILLIS by setting up a notification handler.
         Then I wrote a loop to get the current time and over the course of 6 seconds the time tracked went from 2947 to 3076.
         Which tracks to 21.5 messages being output a second. Each message is 6 bytes so roughly 129 bytes/second.
         The general setup of the notification handler is shown below along with an output.
       </text><br/><br/>
-
-      <img src="imgs\lab1_5.png" width="" height="75"><br/><br/>
+      
+      <div class="image-container">
+        <img src="imgs\lab1_5.png" width="" height="200"><br/><br/>
+      </div>
 
       <text>After that I create SEND_TIME_DATA and SEND_TEMP_DATA. SEND_TEMP_DATA is the same as SEND_TIME_DATA but also stores
         the temperature information alongside the time. It sends each data point as a string and the notification handler receiving it parses it to get both pieces of information and puts it into a list.
         SEND_TEMP_DATA is shared below along with its output. In the second photo the direct output can be seen above the code block while the print outs of the lists and their lengths (256) can be seen. SEND_TIME_DATA is the same but with less information.
       </text><br/><br/>
 
-      <img src="imgs\lab1_3.png" width="" height="400">
-      <img src="imgs\lab1_4.png" width="" height="400"><br/><br/>
+      <div class="image-container">
+        <img src="imgs\lab1_3.png" width="" height="400">
+      </div>
+      <div class="image-container">
+        <img src="imgs\lab1_4.png" width="" height="400"> 
+      </div>
 
       <text>The second method uses 3150-2944 = 206 messages over 6 seconds so slightly over 34 messages a second.
         The size of these messages were larger too and were 27 bytes a piece so 918 bytes a second.
@@ -94,7 +107,9 @@
         than processing a bunch of small messages. I then ran data at a higher rate and found the data gets sent in its entirety but there's a slowdown in terms of the response rate.
       </text><br/><br/>
 
-      <img src="imgs\lab1_7.png" width="" height="200"><br/><br/>
+      <div class="image-container">
+        <img src="imgs\lab1_7.png" width="" height="400"><br/><br/>
+      </div>
 
       <h3>Discussion</h3>
 
