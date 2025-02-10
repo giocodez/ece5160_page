@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+
+  <!-- Navigation -->
+  <nav>
+      <a href="Lab1.html">Lab 1</a>
+      <a href="index.html">Home</a>
+  </nav>
+  <!-- Navigation -->
+
+  <body>
+    <h2>Lab 2</h2>
+    <h3>Lab Tasks</h3>
+    <h4>Setup</h4>
+    <text>First I needed to install the new Library from the Arduino Manager.
+      Then I connected my IMU to the Artemis board as seen below.
+    </text>
+    <div class="image-container">
+      <img src="imgs\lab2_imgs\lab2_14.png" width="250" height="100">  
+    </div>
+    <text>I then ran the example code and saw the following outputs:</text>
+
+    <div class="image-container">
+      <img src="imgs\lab2_imgs\lab2_15.png" width="" height="300">  
+    </div>
+
+    <text>AD0_VAL is defined on code line 23 as the default being 1, and when the ADR jumper is closed the value becomes 0.
+      You can use this value to determine if you have multiple IMUs then which one you explicitly want to receive data from.
+      I left it at 1 and this allowed me to receive data from the IMU as demontrated above.
+      I noticed that the Gyr data is measuring the change of the moving IMU in degrees per second.
+      The acceleration data is outputting values depending on which direction IMU is facing. For instance,
+      if the IMU is flat on the table the third value is at 1000 but flipping it over reveals a value of -1000.
+      The other two rotations are also measured in this way where they are 0 if flat on the table but rotate the IMU
+      to the left or forward then one of the other will go to 1000 depending on the rotation.
+    </text>
+
+    <text>To blink 3 times on start up I added the following code in setup():</text>
+
+    <div class="image-container">
+      <img src="imgs\lab2_imgs\lab2_1.png" width="" height="300">  
+    </div>
+
+    <h3>Accelerometer</h3>
+    <h4>-90, 0, 90 for Pitch / Roll</h4>
+
+    <text>You can see pitch and roll get to roughly -90, 0, and 90 in the Serial Monitor as screenshotted in the following images.</text>
+
+    <div class="image-container">
+      <img src="imgs\lab2_imgs\lab2_0 Pitch, Roll = -.90, -0.png" width="" height="300">  
+    </div>
+    <div class="image-container">
+      <img src="imgs\lab2_imgs\lab2_0 Pitch, Roll = 0, -90.png" width="" height="300">  
+    </div>
+    <div class="image-container">
+      <img src="imgs\lab2_imgs\lab2_0 Pitch, Roll = 0, 90.png" width="" height="300">  
+    </div>
+    <div class="image-container">
+      <img src="imgs\lab2_imgs\lab2_0 Pitch, Roll = 90, 0.png" width="" height="300">  
+    </div>
+
+    <text>The equations used for to obtain the accelerometer pitch and roll was as follows respectively:</text>
+    
+    <div class="image-container">
+      <img src="imgs\lab2_imgs\lab2_2a.png" width="" height="300">  
+    </div>
+    <div class="image-container">
+      <img src="imgs\lab2_imgs\lab2_2b.png" width="" height="300">  
+    </div>
+
+    <h4>Accuracy</h4>
+
+    <text>Over the course of collecting 1000 data points I got the max and minimum pitch and roll over time. 
+      The range of pitch was from -179.498 to 179.044 and for roll was from -179.744 to 179.644. As a result, 
+      the ranges were 358.542 and 359.388 respectively. Given that most of the range was covered, the accelerometer was pretty accurate. 
+      To integrate two point calibrate I would've taken the max in min values revealed above and scaled it to -180 and 180 respectively.
+      However, I didn't find this necessary since the accuracy appeared very high.
+    </text>
+
+    <h4>FFT</h4>
+
+    <text>Next, I implemented the FFT and found the following data for pitch and roll respectively:</text>
+
+    <div class="image-container">
+      <img src="imgs\lab2_imgs\lab2_3p.png" width="" height="300">  
+    </div>
+    <div class="image-container">
+      <img src="imgs\lab2_imgs\lab2_3r.png" width="" height="300">  
+    </div>
+
+    <text>Given these results, I set my cutoff frequency to be .001 and demonstrate the original signal and found the following outputs using a lowpass filter.
+      The left two graphs are pitch, the right two are roll. Top is unfiltered and bottom is filtered.
+    </text>
+
+    <div class="image-container">
+      <img src="imgs\lab2_imgs\lab2_4.png" width="" height="300">  
+    </div>
+
+    <h3>Gyroscope</h3>
+    <h4>Pitch, Roll, and Yaw for Gyro</h4>
+
+    <text>Using the equations from class I initialized the variables and then did a for loop as follows to send data to my python code.</text>
+
+    <div class="image-container">
+      <img src="imgs\lab2_imgs\lab2_5.png" width="" height="300">  
+    </div>
+
+    <text>Here are all the outputs graphed from pitch and roll (gyro, accel, and filtered), along with the gyro yaw output.
+      One can see the gyr outputs match up with the accel outputs.
+    </text>
+    <div class="image-container">
+      <img src="imgs\lab2_imgs\lab2_6p.png" width="500" height="300">  
+    </div>
+    <div class="image-container">
+      <img src="imgs\lab2_imgs\lab2_6r.png" width="500" height="300">  
+    </div>
+    <div class="image-container">
+      <img src="imgs\lab2_imgs\lab2_6y.png" width="500" height="300">  
+    </div>
+
+    <text>After introducing a delay, the following observations in the data were made:</text>
+
+    <div class="image-container">
+      <img src="imgs\lab2_imgs\lab2_6pd.png" width="500" height="300">  
+    </div>
+    <div class="image-container">
+      <img src="imgs\lab2_imgs\lab2_6rd.png" width="500" height="300">  
+    </div>
+    <div class="image-container">
+      <img src="imgs\lab2_imgs\lab2_6yd.png" width="500" height="300">  
+    </div>
+
+    <text>One can see in the pitch and roll data that there is more noise with a delay than without one.
+      This decreases the accuracy because you are missing data between those delays
+      and since the data gets noisier as a result, its harder to pinpoint the true value.
+    </text>
+
+    <h4>Complementary Filter</h4>
+
+    <text>Then I implemented the complementary filter.
+      The filter itself was implemented in python as follows:
+    </text>
+
+    <div class="image-container">
+      <img src="imgs\lab2_imgs\lab2_7.png" width="500" height="300">  
+    </div>
+
+    <text>
+      Where acc and gyro was the data from the accelerometer and gyroscope respectively.
+    </text>
+
+    <text>The first below photo demonstrates both accuracy for the complementary filter and range for the roll.<br/>
+      While the photo right after shows that pitch also has large demonstrated range as well.
+    </text>
+
+    <div class="image-container">
+      <img src="imgs\lab2_imgs\lab2_8.png" width="500" height="300">  
+    </div>
+    <div class="image-container">
+      <img src="imgs\lab2_imgs\lab2_9.png" width="500" height="300">  
+    </div>
+
+    <text>
+      I demonstrate in the following chart how the complementary filter helps prevent drift or quick vibrations.
+      One can see the gyr pitch and roll drifting but the complementary filter staying consistent despite the vibrations.
+    </text>
+
+    <div class="image-container">
+      <img src="imgs\lab2_imgs\lab2_10.png" width="500" height="300">  
+    </div>
+
+    <h3>Sample Data</h3>
+    <h4>Executing Quickly</h4>
+
+    <text>After removing delays and print statements, I was able to sample 256 values in roughly .661 seconds. This was computed
+      by taking the last time stamp in my array and subtracting the first time stamp.
+      Using these values I was able to find that it recorded data at roughly 387 values a second.
+      The first picture shows the length of my array along with the first and last timestamp in milliseconds.
+      The second picture shows the output for gyryaw, where one can see changes throughout the array. So the IMU still can produce values fast enough for the main loop to process it.
+    </text>
+
+    <div class="image-container">
+      <img src="imgs\lab2_imgs\lab2_11a.png" width="" height="300">
+      <text></text>
+      <img src="imgs\lab2_imgs\lab2_11b.png" width="500" height="300">  
+    </div>
+
+    <h4>Time-Stamped IMU Arrays</h4>
+
+    <text>The below is a code snippet of saving the data in an array with a flag</text>
+
+    <div class="image-container">
+      <img src="imgs\lab2_imgs\lab2_12.png" width="500" height="300">  
+    </div>
+
+    <text>theflag is set via a case that can be called from the python code.
+      If the case is called it will switch theflag to the opposite value of what it currently is.
+      I chose to store it in one big array using floats. I chose one big array since it would be less memory overhead since I knew exactly how much data I wanted to extract.
+      I chose floats because it is the type of data that is collected and since I would be doing math on these values, converting them to a string and then back while doing operations would just add overhead and 
+      changing them to an int would lose precision of the data.
+    </text>
+
+    <text>In terms of the maximum amount of memory I could allocate to the arrays.
+      There are 384 kB of RAM on the artemis. If I allocated 50% of it to the arrays (since 100% would be infeasible since you need memory for other values / operations)
+      that would give me 192 kB of RAM on the artemis.
+      A float occupied 4 bytes each and there are 7 floats saved in the array for a total of 28 bytes.
+      With a sample rate of 387 values per second, I use 10,836 bytes/second. This means I can safely store up to 17.7 seconds of data using just 50% of RAM.
+      If I were to use all the RAM it would be a little over 35 seconds of RAM.
+    </text>
+
+    <text>I demonstrate capturing over 5s of IMU data over bluetooth as follows:
+      In the picture below, I show the last timestamp as 67985 in millis and the first timestamp as 62490.
+      Taking the difference, I find that it stored 1935 points of data over the period of 5.495 seconds.
+    </text>
+  
+    <div class="image-container">
+      <img src="imgs\lab2_imgs\lab2_13.png" width="500" height="300">  
+    </div>
+
+    <h3>Stunt Time!</h3>
+    <h4>Observations</h4>
+
+    <div class="image-container">
+      <video width="640" height="360" controls>
+        <source src="imgs\lab2_imgs\IMG_4554.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+    </div><br/>
+
+    I observed that using the remote had the robot rotate very quickly.
+    It was difficult to manually determine the angle I would end up with in terms of direction.
+    In addition, the vehicle proved to be durable as I attempted to do two backflips against the wall (where you can see my failures),
+    and also the robot sometimes would go too quickly and start jumping around in place in a funny manner.
+  </body>

@@ -1,8 +1,8 @@
 :root {
-    --style-red: maroon; /* Carnelian Red */
-    --style-white: #FFFFFF; /* White */
-    --style-dark-grey: #333333; /* Dark gray for text */
-    --style-light-grey: #ffffff; /* Light gray for backgrounds */
+    --style-red: maroon;
+    --style-white: #FFFFFF;
+    --style-dark-grey: #333333;
+    --style-light-grey: #ffffff;
 }
 
 body {
@@ -26,7 +26,7 @@ nav {
     background-color: var(--style-red);
     display: flex;
     justify-content: center;
-    padding: 10px 0;
+    padding: 50px 0;
 }
 
 nav a {
