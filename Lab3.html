@@ -82,7 +82,7 @@
       By slowly increasing the sensor, I found the sensor range to be roughly 3.7 feet. The highest logged value was 3.74. The accuracy of the sensor was consistently between +/- 0.1 feet. 
       Highest accuracy being at one foot. To test repeatability, I tested at two feet at several different times and consistently found it to be between .1 below and .1 above the target distance.
       For ranging time, I printed the time in millis to the Serial Monitor when ranging time started and when the the 
-      checkForDataReady found data. I found the time difference to be roughly 40 ms though there could be a lag in the Serial.println or the range could impact it.
+      checkForDataReady found data. I found the time difference to be generally around 50 ms though there could be a lag in the Serial.println or the range could impact it.
     </text>
 
     <text>
@@ -90,8 +90,7 @@
       To ensure quick execution of my code by not hanging up waiting for sensor data I set flags to note when to start ranging 
       and whenever the data is received it will then print out the data for the respective sensor.
       Below is a code snipet of checking when to start ranging and the output including both sensors working
-      and printing in parallel with and without millis() being printed. Loop speed is found to be when printing out each ms
-      is 66 ms but a limiting factor / slowdown could be the result of repeated print statements and hardware factors such as wiring connections etc.
+      and printing in parallel with and without millis() being printed.
     </text>
 
     <div class="image-container">
@@ -101,6 +100,10 @@
       <text>.</text>
       <img src="imgs\lab3_imgs\lab3_8.png" width="250" height="100"> 
     </div>
+
+    <text>
+      To then find the loop speed, I just printed at the end of each loop. I found it to be 5 ms but a limiting factor / slowdown could be the result of repeated print statements.
+    </text>
 
     <text>Then I sent over time-stamped ToF and IMU data to my computer.
       Below are a series of plots. The first is ToF data, the second is IMU data at the same time ToF data was captured. The third is IMU data but at another time but shown with more deliberate movements.
