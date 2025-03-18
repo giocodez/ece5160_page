@@ -75,8 +75,9 @@
 
   <text>As one can see, I added to the setup() to
     initialize the DMP, then I implemented get_Yaw() to
-    output the yaw whenver it was there and output -404
-    whenever there were issues thus filtering those measurements out.
+    output the yaw using the DMP using the data from its FIFO whenever it had 
+    valid data available and output -404
+    whenever there were issues with getting the yaw thus filtering those measurements out.
     Some limitations on the sensor to be aware about it that using the DMP mode 
     I did sets the maximum rotational velocirty to 2000 dps. This is sufficient for 
     our applications since we won't be moving our robot at a faster velocity. One could change the DMP mode to configure that parameter.
