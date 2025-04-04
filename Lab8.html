@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+
+  <!-- Navigation -->
+  <nav>
+      <a href="Lab7.html">Lab 7</a>
+      <a href="index.html">Home</a>
+  </nav>
+  <!-- Navigation -->
+
+  <body>
+    <h2>Lab 8</h2>
+    <h3>Task B</h3>
+    <h4>Get that Drift Working</h4>
+    
+    <text>I decided to implement the drift task. I first decided to repeat the setup I had in the previous labs 
+      in terms of using bluetooth to set a flag to then initialize the stunt from the jupyter lab.
+      This code would set the stunt_flag to true, thus initializing the stunt. Code snippet 
+      can be seen below.
+    </text>
+
+    <div class="image-container">
+      <img src="imgs\lab8_imgs\lab8_1.png" width="500" height="100">
+    </div>
+
+    <text>Next I initialized global variables. This includes stunt_flag which is my flag,
+      stunt_value was used to keep track of where in the stunt I was, and the other 
+      values were all used to store information in relation to the vehicle's sensors and 
+      motor input. Declared global variables are shared below:
+    </text>
+
+    <div class="image-container">
+      <img src="imgs\lab8_imgs\lab8_2.png" width="500" height="100">
+    </div>
+
+    <text>
+      I was encountering an issue where I was frequently not getting new data.
+      So I updated my setup() function per Stephen Wagner's suggestion
+      in regarding handling the DMP FIFO. He added the following line to half the 
+      speed to prevent filling his FIFO.
+      I modified my setup() function from the prior lab from 0 to 1.
+    </text>
+
+    <div class="image-container">
+      <img src="imgs\lab8_imgs\lab8_3.png" width="500" height="100">
+    </div>
+
+    <text>However, I found this was insufficient at solving the problem.
+      As a result, one step I took to fix this was moving this line to within my stunt_s2() function which I detail later.
+      This did a better job and I was able to more consistently get new values from the DMP.
+    </text>
+
+    <text>
+      My stunt flag broke down the code into 4 components:
+    </text>
+
+    <div class="image-container">
+      <img src="imgs\lab8_imgs\lab8_4.png" width="200" height="100">
+    </div>
+
+    <text>Part 1 was responsible for going up to a certain distance (914 mm) to the wall,
+      it called helper function stunt_s1() which will be shared below and runs it
+      until it gets within that distance, After which it updates the stunt_value,
+      and gets the target Yaw which is 180 degrees off of what the current yaw is 
+      and then updates it so that it falls within the range [-180, 180].
+    </text>
+    <text>
+      Then it goes into step 2 which is the turning part where it will call stunt_s2
+      and turn until within a threshold of the desired rotation (180 degrees of the initial Yaw) before updating.
+    </text>
+    <text>
+      Then step 3 just applies a constant control of 170 to move forward for 2 seconds,
+      before entering step 4 which stops the vehicle.
+    </text>
+    <text>
+      I originally had each of the stunts separately, and they would trigger the other.
+      However, I found it better to just do them consecutively within one if statement.
+      Hence why you can see that step 2 and step 3 eventually got combined into 
+      the same if statement despite step 2 being completed within function stunt_s2()
+      and step 3 being completed right below it.
+    </text>
+
+    <text>Stunt_s1() was effectively copied from the Kalman Filter Lab 7, using the Kalman Filter to measure distance from the wall.
+      For more details on implementation check the Lab 7 writeup. The changes to it were as follows:
+      As long as the kalman filter expected a measurement greater than 914 then it would always
+      send the same control of 170. This is in contrast to how before the input speed was impacted by using PID with
+      the measurement. If the measurement was less than the setpoint then it would break out of the loop to go to the next stage.
+      The differences from the prior lab are visible below:
+    </text>
+
+    <div class="image-container">
+      <img src="imgs\lab8_imgs\lab8_5.png" width="500" height="100">
+    </div>
+
+    <text>Stunt_s2() was effectively the same as Lab 6's Orientation PID control with a few changes:
+      First of all, i_pid_cur (my index for pid arrays) was reset to 0 at the top of the function 
+      to prevent stunt_s1 from impacting stunt_s2,
+      since it won't look at prior pid data.
+      Since I was overwriting prior data here was fine, I created a new array to save the IMU data which is detailed below.
+      <br/>
+      Furthermore, Stephen Wagner's suggestion for the DMP to handle the FIFO buffer was implemented.
+      <br/>
+      Second of all, I fixed how I determined whether the car was within range of the desired rotation.
+      Reasoning for this is shared beneath the code snippets.
+      <br/>
+      These changes are visible below.
+    </text>
+
+    <div class="image-container">
+      <img src="imgs\lab8_imgs\lab8_12.png" width="500" height="100">
+    </div>
+
+    <div class="image-container">
+      <img src="imgs\lab8_imgs\lab8_6.png" width="500" height="100">
+    </div>
+
+    <text>
+      The if statement using angular difference was modified to now allow for it to take into account 
+      if the current DMP value is -179 and the desired is 179. Before it was only taking the difference 
+      making it difficult for values around the edges of the boundaries.
+      I found threshold for stopping rotation to be optimal between 5-10 degrees. The smaller you made it, the more 
+      accurate the desired routing would be but also the chance of overshooting the target 
+      and just spinning in place increased while a higher value decreased the accuracy
+      but made it converge to a point faster.
+    </text>
+
+    <h4>Data Stored And Reasoning</h4>
+
+    <text>The motor input data was stored throughout the 
+      exercise by adding to my send_control & send_control6 function (these functions are used to
+      send the signals to the drive motors to move the car 
+      forward and back and other to change its orientation respectively), the following code:
+    </text>
+
+    <div class="image-container">
+      <img src="imgs\lab8_imgs\lab8_7.png" width="500" height="100">
+    </div>
+
+    <text>
+      Because of the way that my motors are wired, to go forward one side needs
+      to be negative and the other side would be positive.
+      Hence, in the above example 
+      the -1 * control is added to indicate direction.
+      In the backward case, the signs would flip and for the turns the motors would have
+      the same signs.
+    </text>
+
+    <text>In addition, Kalman Filter data was saved,
+      but only for Step 1 since that is the only step I used it for.
+      This data was saved and transfered the same way as detailed in Lab 7.
+    </text>
+
+    <text>Furthermore, IMU DMP data is saved but only 
+      during Step 2, because that is the only part of the code where 
+      I am actively calling the DMP function to get the yaw and have the speed updated 
+      per Stephen Wagner's suggestion to maintain accurate values.
+      The code snippet where it's saved is shared below. I had to implement a new 
+      array here, because as mentioned above, I overwrite the data in the pid_array
+      to prevent step 1 from impacting step 2.
+    </text>
+
+    <div class="image-container">
+      <img src="imgs\lab8_imgs\lab8_11.png" width="500" height="100">
+    </div>
+
+    <text>All this data, will be shared for each of the runs
+      seen.
+    </text>
+
+    <h4>The Runs</h4>
+
+    <div class="image-container">
+      <video width="640" height="360" controls>
+        <source src="imgs\lab8_imgs\IMG_4744.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+    </div>
+
+    <div class="image-container">
+      <img src="imgs\lab8_imgs\lab8_8.png" width="500" height="100">
+    </div>
+
+    <div class="image-container">
+      <video width="640" height="360" controls>
+        <source src="imgs\lab8_imgs\IMG_4705.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+    </div>
+
+    <div class="image-container">
+      <img src="imgs\lab8_imgs\lab8_9.png" width="500" height="100">
+    </div>
+
+    <div class="image-container">
+      <video width="640" height="360" controls>
+        <source src="imgs\lab8_imgs\IMG_4787.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+    </div>
+
+    <div class="image-container">
+      <img src="imgs\lab8_imgs\lab8_10.png" width="500" height="100">
+    </div>
+
+    <text>Some interesting observations I made is that a lower threshold 
+      would lead for the car to spin more since the car would occasionally
+      overshoot the measurement until it found a new one. A higher threshold 
+      made it spin faster but the end angle would be slightly less precise.
+      A measurement between 5-10 degrees of the initial measured yaw was desired.
+      Also, the third chart IMU data was pretty interesting since it seems like it only 
+      rotated once but the visual indicates otherwise.
+    </text>
+
+    <text>
+      Another interesting thing was my Kalman Filter being fairly off initially
+      before determining the desired position. I still think using the Kalman Filter,
+      is better than omitting it since a single poor ToF reading under the threshold
+      could trigger step 2 and cause the car to just spin in place randomly.
+      However, given this Kalman Filter initialization, if initialized close to the desired threshold 
+      to start the rotation could cause it to rotate prematurely. Changing initial Kalman Filter values 
+      and retuning them could help alleviate this problem, but it was unnecessary to get the drift working in this lab.
+    </text>
+
+    <text>
+      The top issues I had to fix was the following:
+      <ul>
+        <li>Fixing it so that the desired orientation could be 
+          detected over the (-180, 180) threshold. I.e. -179 is only two degrees off from 179.
+          I had an issue occur because of how I initially tried handling where both it would either 
+          just spin in place or it would freeze and wait to time out when it reached the threshold.
+          The freezing can be seen in my blooper below.
+        </li>
+        <li>Adjusting the degrees threshold so that it wouldn't overshoot repeatedly
+          and continuously spin but also was narrow enough to get the desired orientation to go back on.
+        </li>
+      </ul>
+    </text>
+
+    <text>My blooper is as follows: Watch until the very end.</text>
+
+    <div class="image-container">
+      <video width="640" height="360" controls>
+        <source src="imgs\lab8_imgs\IMG_4754.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+    </div>
+
+  </body>
+
+  <footer>
+      <a href="Collaboration.html"><text>Collaboration Statement</text></a>
+  </footer>
