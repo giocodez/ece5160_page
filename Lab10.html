@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+
+  <!-- Navigation -->
+  <nav>
+      <a href="Lab9.html">Lab 9</a>
+      <a href="index.html">Home</a>
+      <a href="Lab10.html">Lab 10</a>
+  </nav>
+  <!-- Navigation -->
+
+  <body>
+    <h2>Lab 10</h2>
+
+    <h3>Introduction</h3>
+    <h4>Bayes Filtering Localization</h4>
+
+    <text>The task at hand is localization.
+      To do this we will be implementing Bayes Filter Localization which 
+      creates discrete space and estimates the probability that the robot is in those 
+      spaces based off of observations in space. I'll be detailing its implementation later 
+      in this lab.
+    </text>
+
+    <div class="image-container">
+      <img src="imgs\lab10_imgs\lab10_9.png" width="500" height="100">
+    </div>
+
+    <h3>Localization in Sim</h3>
+    <h4>Compute Control</h4>
+
+    <text>The first function which I had to implement for localization was compute_control. 
+      This function took in the current pose and the previous pose and estimated the control 
+      information based on the odometry motion model.
+    </text>
+
+    <div class="image-container">
+      <img src="imgs\lab10_imgs\lab10_1.png" width="500" height="100">
+    </div>
+
+    <text>I modeled my function off of the above equations shared in lab.
+      Their implementation for the compute_control function is shared below.
+    </text>
+
+    <div class="image-container">
+      <img src="imgs\lab10_imgs\lab10_2.png" width="500" height="100">
+    </div>
+
+    <h4>Odom Motion Model</h4>
+
+    <text>Next I had to implement the odom_motion_model function.
+      This function took in the current pose, previous pose, and the control data,
+      and returns the probability of the new pose given the prior pose and control.
+      For this function, I used the following information in the lab docs to model my function:
+    </text>
+
+    <div class="image-container">
+      <img src="imgs\lab10_imgs\lab10_3.png" width="500" height="100">
+    </div>
+
+    <text>My implementation can be seen as follows:</text>
+
+    <div class="image-container">
+      <img src="imgs\lab10_imgs\lab10_4.png" width="500" height="100">
+    </div>
+
+    <h4>Prediction Step</h4>
+
+    <text>Next, I had to implement the prediction step.
+      To do this, I got the computed control from the compute control function and then
+      using all the current poses and previous poses I computed the probability of the 
+      odomotry motion model given those poses and the control. Then I updated the beliefs
+      and normalized them at the end of the function. This was done to update the 
+      probabilities in loc.bel_bar based on the previous time step and motion model.
+      The implementation can be seen below.
+    </text>
+
+    <div class="image-container">
+      <img src="imgs\lab10_imgs\lab10_5.png" width="500" height="100">
+    </div>
+
+    <text>I originally had some trouble with the implementation of this. I had originally 
+      accidently set both the cur_pos and prev_pos to the same values
+      and this caused the updates of the bayes grid on the map to not
+      be visualized. However, I soon discovered my error and correctly
+      separated the two poses.
+    </text>
+
+    <h4>Sensor Model</h4>
+
+    <text>The next function I needed to implement was the sensor model.
+      This function took in all the observations and estimated the probabilities of each 
+      sensor measurement given the robot pose. The below equation is used to find the 
+      likelihood of the 18 measurements given a state.
+    </text>
+
+    <div class="image-container">
+      <img src="imgs\lab10_imgs\lab10_6.png" width="500" height="100">
+    </div>
+
+    <text>As one can see in my implementation below, the sensor_model function 
+      returns probs which is an array of size loc.OBS_PER_CELLS per the returns 
+      statement. For each i it checks the true observation versus the expected observation 
+      along with the associated sigma to determine its probability before adding the 
+      probability to the final output array.
+    </text>
+
+    <div class="image-container">
+      <img src="imgs\lab10_imgs\lab10_7.png" width="500" height="100">
+    </div>
+
+    <h4>Update Step</h4>
+
+    <text>The last function that needs to be implemented is the update_step function.
+      This function updates the probabilities in loc.bel based on loc.bel_bar and the sensor model.
+      The function gets the current state and retrieves the sensor model and updates the belief.
+      It then is normalized to provide an estimation of the robot's position.
+    </text>
+
+    <div class="image-container">
+      <img src="imgs\lab10_imgs\lab10_8.png" width="500" height="100">
+    </div>
+
+    <h4>The Runs</h4>
+
+    <text>Here I share videos of both of my runs. Green is the ground truth, blue is the belief, and red is the odometry.
+      The distribution is mapped as a grid. Generally, the belief is pretty accurate and follows the ground truth roughly accurately.
+      The odometry however, is a lot less accurate. This makes sense since the errors will compound with time until the estimation 
+      is worthless. While the belief was pretty good, the bayes map generally followed it accurately and 
+      displayed the general region of the true pose accurately. However, it wasn't always precise 
+      on the exact location of the robot. I found that it was most accurate at the beginning and end of the trajectory
+      but when it was closest to the wall the accurate diminished slightly. This could be because there are a lot of similar
+      states that could be captured with the same distance to the nearest walls while when in the center of the map the 
+      states are more unique in their expected measurements.
+    </text>
+
+    <div class="image-container">
+      <video width="640" height="360" controls>
+        <source src="imgs\lab10_imgs\Recording141904.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+    </div>
+
+    <div class="image-container">
+      <video width="640" height="360" controls>
+        <source src="imgs\lab10_imgs\Recording141905.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+    </div>
+
+  </body>
+
+  <footer>
+      <a href="Collaboration.html"><text>Collaboration Statement</text></a>
+  </footer>
