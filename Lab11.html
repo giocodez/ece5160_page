@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+
+  <!-- Navigation -->
+  <nav>
+      <a href="Lab10.html">Lab 10</a>
+      <a href="index.html">Home</a>
+  </nav>
+  <!-- Navigation -->
+
+  <body>
+    <h2>Lab 11</h2>
+
+    <h3>Setting Up the Lab</h3>
+    <h4>Setting Up Base Code and Running Through Lab11_sim.pynb</h4>
+
+    <text>First, I followed the steps and copied the lab11_sim.ipynb, lab11_real.ipynb, localization_extras.py, 
+      and all the necessary Bluetooth modules into the correct folders as outlined in the lab.
+    </text>
+
+    <text>After doing this, I tested the localization in simulation and got a screenshot
+      of the final data. This screenshot is attached below.
+    </text>
+
+    <div class="image-container">
+      <img src="imgs\lab11_imgs\lab11_1.png" width="500" height="100">
+    </div>
+    
+    <h3>Putting It On Real</h3>
+    <h4>Implementation on the Real Robot</h4>
+
+    <text>Next, I had to go through implementing it on the real robot.
+      To do this, I had to implement the function perform_observation_loop.
+      This code is visualized and explained below.
+    </text>
+
+    <div class="image-container">
+      <img src="imgs\lab11_imgs\lab11_2.png" width="500" height="100">
+    </div>
+
+    <text>For this function, I repurposed a lot of code from earlier.
+      I use the ble commands CMD.SET_STUNT and CMD.GET_9 which was implemented 
+      and detailed in lab 9. As a short reminder, SET_STUNT is used to turn the car
+      in a circle and collect data points for both ToF sensors and GET_9 is used 
+      to send the data to the notification handler.
+    </text>
+
+    <text>In the notification handler, the only data we really care about is 
+      nn_nh_d1 as this is the ToF measurements of the first ToF sensor. We divide it
+      by 1000 to get the data in meters.
+    </text>
+
+    <text>Then we implemented a while loop to wait until all 18
+      observations were found and then after reverse the list
+      and reshape it to be a column vector.
+    </text>
+
+    <text>The reason for the reshaping is that my 
+      control function was moving my vehicle clockwise but the 
+      output expects the measurements in counterclockwise movement.
+      I tried changing my control function but found it more effective
+      to just flip the data here especially given severe time constraints
+      that I had which I go into detail later when I cover the Windows v. Mac
+      issue. This solution ended up working perfectly as will be seen in my results
+      section.
+    </text>
+
+    <text>Besides that function, I also needed to add async and await elsewhere to 
+      get it to work. Below, I share where I add it.
+    </text>
+
+    <div class="image-container">
+      <img src="imgs\lab11_imgs\lab11_3.png" width="500" height="100">
+    </div>
+
+    <div class="image-container">
+      <img src="imgs\lab11_imgs\lab11_10.png" width="500" height="100">
+    </div>
+
+    <text>After this the only other changes I needed to make was to update 
+      my rotations to be in increments of 20 to just collect 18 data points per sensor.
+      Before, I was collecting much more data than that. The changes to the control are shared below.
+      The only other change besides that, was decreasing my global array size that send values to the BLE
+      to 18.
+    </text>
+
+    <div class="image-container">
+      <img src="imgs\lab11_imgs\lab11_4.png" width="500" height="100">
+    </div>
+
+    <h4>Details About My Nightmare</h4>
+
+    <text>A huge issue that came up during this lab was a very long error 
+      message that came up. Since the total message is too long to share, I 
+      share the end below and the error message can also be referenced in Ed Post #222.
+    </text>
+
+    <div class="image-container">
+      <img src="imgs\lab11_imgs\lab11_5.png" width="500" height="100">
+    </div>
+
+    <text>Asking ChatGPT about what was causing this bug revealed that
+      this issue was specifically caused by using Windows + Jupyter Notebook +
+      pythoncom. Asking around, everyone who completed the lab was using a Mac
+      and no one around me with a Windows like I did managed to get very far at this point.
+    </text>
+
+    <text>After spending hours debugging, I was unable to find a fix mainly because 
+      I was concerned with breaking some of the important dependencies. As a result,
+      I decided to borrow a Mac from the Library.
+    </text>
+
+    <text>Unfortunately, that borrowed Mac also was unable to do the job.
+      This is because I needed administrator access to make some of the installations
+      I needed to make and the University Mac's didn't give me that access.
+      As a result, I asked a friend to borrow their Mac and since they weren't a 
+      CS major, I set up everything from scratch including installing developer tools 
+      and python to be able to test my code.
+    </text>
+
+    <text>Fortunately, I was able to get it working
+      within those 3 hours by setting things up correctly in theory
+      and pushing to github.
+      Given I had implemented most of the code 
+      correctly prior to to getting the computer,
+      I still had to make split second decisions given I only had 3
+      hours to collect data. 
+    </text>
+
+    <text>One of these decisions was choosing to
+      reverse my collected data instead of reversing my 
+      control direction as reversing the control was causing 
+      bugs I was afraid I wouldn't have time to debug.
+      Another one was as seen later, I only ended up plotting the 
+      beliefs in the chart. However, I made sure to record what the 
+      belief was in terms of values so that I could later check the 
+      distance against the true position.
+    </text>
+
+    <text>
+      In all, I hope this details some of the limitations I faced
+      purely because of my OS. I never encountered the same 
+      bug on Mac despite using the same code base. Now onto the results!
+    </text>
+
+    <h4>Results</h4>
+
+    <b><text>(-3 ft, -2ft, 0 deg)</text></b>
+
+    <div class="image-container">
+      <img src="imgs\lab11_imgs\lab11_6.png" width="500" height="100">
+    </div>
+
+    <text>In this image, we can see the belief of the datapoint
+      is (-.914, -.610, 10). Converting from ft to meters
+      we get (-.9144, -.6096, 0). The inaccuracy can be attributed
+      to a rounding error for the raw coordinates. The degrees are 
+      10 degrees off, the reason for this is explained below.
+    </text>
+
+    <b><text>(0 ft, 3 ft, 0 deg)</text></b>
+
+    <div class="image-container">
+      <img src="imgs\lab11_imgs\lab11_7.png" width="500" height="100">
+    </div>
+
+    <text>
+      In this image, we can see the belief of the datapoint 
+      is (-.305, .914, 10). Converting from ft to meters
+      we get (0, 0.9144, 0). We then compute the distance and get 
+      a distance of .305m. This distance is larger than that of
+      the above example, but still highly accurate. The inaccuracy 
+      in degrees remains the same.
+    </text>
+
+    <b><text>(5 ft, -3 ft, 0 deg)</text></b>
+
+    <div class="image-container">
+      <img src="imgs\lab11_imgs\lab11_8.png" width="500" height="100">
+    </div>
+
+    <text>In this image, we can see the belief of the datapoint 
+      is (1.524, -.914, 10). Converting from ft to meters 
+      we get (1.524, -.9144, 10). The difference between
+      these two measurements is equivalent to a rounding error,
+      meaning our localization is accurate. We observe the same 
+      thing in regards to degrees as in the prior points.
+    </text>
+
+    <b><text>(5 ft, 3 ft, 0 deg)</text></b>
+
+    <div class="image-container">
+      <img src="imgs\lab11_imgs\lab11_9.png" width="500" height="100">
+    </div>
+
+    <text>In this image, we can see the belief of the datapoint 
+      is (1.524, .610, 10). Converting from ft to meters 
+      we get (1.524, .9144, 0). The distance between these two
+      points is .304m which is very similar to the second datapoint
+      we measured. Again we observe a 10 degree offset.
+    </text>
+
+    <h4>Overall Remarks</h4>
+
+    <text>One very interesting thing is that the estimation consistently stated that
+      the robot was placed at 10 degrees. This is likely because in my
+      PID control, I set my first desired measurement at 20 degrees off from
+      my initial yaw. However, my threshold for being in the right space is 10 degrees.
+      So what likely occured is that the first measurement happened 10 degrees from my
+      initial yaw and every measurement after was 20 degrees off from that since thats
+      when it reached 10 degrees to my desired yaw. As a result, the 10 degrees 
+      offset is expected.
+    </text>
+
+    <text>In terms of how well the localization occured. The bottom two points were 
+      absolutely precise with the only error occuring because of rounding of the belief.
+      However, the two top points were off by basically the same distance (.305m).
+      Still this offset is pretty small and I think is likely can just be attributed to 
+      imperfect human placement and rotation of the robot given how small the offset is.
+      At no point was the localization terrible.
+    </text>
+  </body>
+
+  <footer>
+      <a href="Collaboration.html"><text>Collaboration Statement</text></a>
+  </footer>
